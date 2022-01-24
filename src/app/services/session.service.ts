@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from './authentication/authentication.service';
+import {Users} from "../entities/users";
+// import { Feedback } from '../entities/feedback';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +20,18 @@ export class SessionService {
   };
   private url = `${environment.backendUrl}`;
 
+
   constructor(private http: HttpClient,private router: Router,
     private _snackBar: MatSnackBar, private authentication: AuthenticationService){
 
   }
+
+
+  // getFeedback(session: Session){
+  //   const geturl = `${this.url}/sessions/${session.sessionId}/getfeedback`;
+  //
+  //    return this.http.get<Feedback>(geturl);
+  // }
 
   addSession(session:Session): Observable<Session>{
     return this.http.post<Session>(`${this.url}/sessions`,session)
@@ -40,4 +50,55 @@ export class SessionService {
     }
     return false;
   }
+  isUserTheSessionCoachee(session:Session): boolean{
+    if(session){
+      if(session.coacheeId === this.authentication.getUserId()){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /////////////////////////////////////////////////////////
+
+  getSessionById(id: string | any): Observable<any> {
+    const url = `${this.url}/sessions/${id}`;
+    return this.http.get<Session>(url, id);
+  }
+
+  updateCoachingSessionState(session: Session): any{
+    const updateUrl = `${this.url}/sessions/${session.sessionId}`;
+    const sessionStatus = session.sessionStatus;
+    return this.http.put<any>(updateUrl,sessionStatus).subscribe()
+
+  }
+
+  updateFeedbackFromCoachee(session: Session): any{
+    const updateUrl = `${this.url}/sessions/${session.sessionId}/addfeedback`;
+    const feedbackFromCoachee = session.feedbackFromCoachee;
+    return this.http.put<any>(updateUrl,feedbackFromCoachee).subscribe(
+      (data) => {
+        this.displaySnackbar('Feedback added succesfully');
+      },
+      (error) => {
+        this.displaySnackbar('Error adding feedback');
+      }
+    );
+  }
+  updateFeedbackFromCoach(session: Session): any{
+    const updateUrl = `${this.url}/sessions/${session.sessionId}/addfeedback`;
+    const feedbackFromCoach = session.feedbackFromCoach;
+    return this.http.put<any>(updateUrl,feedbackFromCoach).subscribe(
+      (data) => {
+        this.displaySnackbar('Feedback added succesfully');
+      },
+      (error) => {
+        this.displaySnackbar('Error adding feedback');
+      }
+    );
+  }
+  displaySnackbar(message: string) {
+    this._snackBar.open(message, 'close', { duration: 2000 });
+  }
 }
+
