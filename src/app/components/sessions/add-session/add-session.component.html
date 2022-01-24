@@ -23,7 +23,7 @@
         
         />
         <mat-datepicker #picker></mat-datepicker>
-        <button mat-raised-button (click)="picker.open()">Select Date</button>
+        <button type="button" mat-raised-button (click)="picker.open()">Select Date</button>
       </mat-form-field>
 
       <mat-form-field class="example-full-width" appearance="fill">
@@ -37,7 +37,7 @@
                placeholder="4:00 PM"
                formControlName="time"
                />
-               <button mat-raised-button (click)="pickerA.open()">Select Time</button>
+               <button type="button" mat-raised-button (click)="pickerA.open()">Select Time</button>
         
     </mat-form-field>
     <ngx-mat-timepicker #pickerA></ngx-mat-timepicker>
