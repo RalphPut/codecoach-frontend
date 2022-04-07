@@ -27,6 +27,7 @@ export class CoachGalleryComponent implements OnInit {
   defaultImg!: string;
 
   ngOnInit(): void {
+    
 
     this.topic = '';
     this.partialSearch = '';
